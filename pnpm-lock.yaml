@@ -335,6 +335,12 @@ importers:
       node-pty:
         specifier: 'catalog:'
         version: 1.1.0
+      proxy-from-env:
+        specifier: ^1.1.0
+        version: 1.1.0
+      undici:
+        specifier: ^7.0.0
+        version: 7.24.3
       zod:
         specifier: 'catalog:'
         version: 3.25.76
@@ -345,6 +351,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 20.19.37
+      '@types/proxy-from-env':
+        specifier: ^1.0.4
+        version: 1.0.4
       typescript:
         specifier: ^5.7.2
         version: 5.9.3
@@ -1869,6 +1878,9 @@ packages:
 
   '@types/prismjs@1.26.6':
     resolution: {integrity: sha512-vqlvI7qlMvcCBbVe0AKAb4f97//Hy0EBTaiW8AalRnG/xAN5zOiWWyrNqNXeq8+KAuvRewjCVY1+IPxk4RdNYw==}
+
+  '@types/proxy-from-env@1.0.4':
+    resolution: {integrity: sha512-TPR9/bCZAr3V1eHN4G3LD3OLicdJjqX1QRXWuNcCYgE66f/K8jO2ZRtHxI2D9MbnuUP6+qiKSS8eUHp6TFHGCw==}
 
   '@types/react-dom@19.2.3':
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
@@ -7542,6 +7554,10 @@ snapshots:
 
   '@types/prismjs@1.26.6': {}
 
+  '@types/proxy-from-env@1.0.4':
+    dependencies:
+      '@types/node': 20.19.37
+
   '@types/react-dom@19.2.3(@types/react@19.2.14)':
     dependencies:
       '@types/react': 19.2.14
@@ -11681,8 +11697,7 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici@7.24.3:
-    optional: true
+  undici@7.24.3: {}
 
   unified@11.0.5:
     dependencies:
