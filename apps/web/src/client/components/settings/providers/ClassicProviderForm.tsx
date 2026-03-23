@@ -120,12 +120,13 @@ export function ClassicProviderForm({
         await accomplish.setOpenAiBaseUrl(openAiBaseUrl.trim());
       }
 
-      const resolvedCustomBaseUrl = hasEditableBaseUrl
-        ? customBaseUrl.trim() || defaultBaseUrl
+      const explicitCustomBaseUrl = hasEditableBaseUrl ? customBaseUrl.trim() : '';
+      const resolvedBaseUrl = hasEditableBaseUrl
+        ? explicitCustomBaseUrl || defaultBaseUrl || undefined
         : undefined;
 
       const validation = await accomplish.validateApiKeyForProvider(providerId, apiKey.trim(), {
-        baseUrl: resolvedCustomBaseUrl,
+        baseUrl: resolvedBaseUrl,
       });
 
       if (!validation.valid) {
@@ -141,7 +142,7 @@ export function ClassicProviderForm({
       let fetchedModels: Array<{ id: string; name: string }> | undefined;
       if (providerConfig?.modelsEndpoint) {
         const fetchResult = await accomplish.fetchProviderModels(providerId, {
-          baseUrl: isOpenAI ? openAiBaseUrl.trim() || undefined : undefined,
+          baseUrl: isOpenAI ? openAiBaseUrl.trim() || undefined : resolvedBaseUrl,
         });
         if (fetchResult.success && fetchResult.models) {
           fetchedModels = fetchResult.models;
@@ -171,7 +172,7 @@ export function ClassicProviderForm({
         } as ApiKeyCredentials,
         lastConnectedAt: new Date().toISOString(),
         ...(fetchedModels ? { availableModels: fetchedModels } : {}),
-        ...(resolvedCustomBaseUrl ? { customBaseUrl: resolvedCustomBaseUrl } : {}),
+        ...(explicitCustomBaseUrl ? { customBaseUrl: explicitCustomBaseUrl } : {}),
       };
 
       onConnect(provider);
