@@ -38,6 +38,7 @@ const migrations: Migration[] = [
   v012,
   v013,
   v014,
+  v015,
 ];
 export function registerMigration(migration: Migration): void {
   migrations.push(migration);
