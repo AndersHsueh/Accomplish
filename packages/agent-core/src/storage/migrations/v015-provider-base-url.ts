@@ -9,3 +9,4 @@ export const migration: Migration = {
     `);
   },
 };
+
