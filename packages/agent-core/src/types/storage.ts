@@ -56,6 +56,7 @@ export interface StoredFavorite {
   favoritedAt: string;
 }
 export type ThemePreference = 'system' | 'light' | 'dark';
+export type LanguagePreference = 'auto' | 'en' | 'zh-CN' | 'ru' | 'fr';
 
 /** Application settings snapshot */
 export interface AppSettings {
@@ -173,6 +174,10 @@ export interface AppSettingsAPI {
   getCloseBehavior(): 'keep-daemon' | 'stop-daemon';
   /** Set the window close button behavior */
   setCloseBehavior(behavior: 'keep-daemon' | 'stop-daemon'): void;
+  /** Get the user's UI language preference */
+  getLanguage(): LanguagePreference;
+  /** Set the user's UI language preference */
+  setLanguage(language: LanguagePreference): void;
   /** Get all application settings as a snapshot */
   getAppSettings(): AppSettings;
   /** Reset all application settings to defaults */

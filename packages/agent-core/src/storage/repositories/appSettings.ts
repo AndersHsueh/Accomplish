@@ -46,7 +46,10 @@ export {
   setNotificationsEnabled,
   getCloseBehavior,
   setCloseBehavior,
+  getLanguage,
+  setLanguage,
   VALID_THEMES,
+  VALID_LANGUAGES,
 } from './ui-settings.js';
 
 export type { CloseBehavior } from './ui-settings.js';

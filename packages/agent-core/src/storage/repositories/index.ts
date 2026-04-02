@@ -21,6 +21,8 @@ export {
   setOpenAiBaseUrl,
   getTheme,
   setTheme,
+  getLanguage,
+  setLanguage,
   getAppSettings,
   clearAppSettings,
   type AppSettings,

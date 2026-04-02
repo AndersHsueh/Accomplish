@@ -12,6 +12,23 @@ export type { BrowserConfig, McpServerConfig } from './generator-mcp.js';
 
 const log = createConsoleLogger({ prefix: 'OpenCodeConfig' });
 
+const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
+  'zh-CN': '中文',
+  ru: 'Russian',
+  fr: 'French',
+};
+
+function getLanguageInstruction(language: string | undefined): string {
+  if (!language || language === 'auto' || language === 'en') {
+    return '';
+  }
+  const displayName = LANGUAGE_DISPLAY_NAMES[language];
+  if (!displayName) {
+    return '';
+  }
+  return `#始终用${displayName}交流#`;
+}
+
 export const ACCOMPLISH_AGENT_NAME = 'accomplish';
 
 export interface ConfigGeneratorOptions {
@@ -47,6 +64,8 @@ export interface ConfigGeneratorOptions {
   }>;
   /** Formatted workspace knowledge notes to inject into the system prompt */
   knowledgeNotes?: string;
+  /** UI language preference — instructs the agent to reply in the user's language */
+  language?: string;
   /**
    * Custom config file name (default: 'opencode.json').
    * Use a per-task name (e.g. 'opencode-tsk_abc123.json') to prevent
@@ -120,7 +139,7 @@ export function generateConfig(options: ConfigGeneratorOptions): GeneratedConfig
   let systemPrompt = ACCOMPLISH_SYSTEM_PROMPT_TEMPLATE.replace(
     /\{\{ENVIRONMENT_INSTRUCTIONS\}\}/g,
     environmentInstructions,
-  );
+  ).replace('{{LANGUAGE_INSTRUCTION}}', getLanguageInstruction(options.language));
 
   if (skills.length > 0) {
     const skillsSection = `

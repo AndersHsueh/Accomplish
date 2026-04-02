@@ -60,6 +60,17 @@ export function registerSettingsHandlers(): void {
     }
   });
 
+  handle('settings:language', async (_event: IpcMainInvokeEvent) => {
+    return storage.getLanguage();
+  });
+
+  handle('settings:set-language', async (_event: IpcMainInvokeEvent, language: string) => {
+    if (!['auto', 'en', 'zh-CN', 'ru', 'fr'].includes(language)) {
+      throw new Error('Invalid language value');
+    }
+    storage.setLanguage(language as 'auto' | 'en' | 'zh-CN' | 'ru' | 'fr');
+  });
+
   handle('settings:app-settings', async (_event: IpcMainInvokeEvent) => {
     return storage.getAppSettings();
   });

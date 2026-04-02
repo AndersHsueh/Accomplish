@@ -185,13 +185,18 @@ export async function initI18n(): Promise<void> {
     updateDocumentDirection(initialLanguage);
     isInitialized = true;
     logger.info(`Initialized with language: ${initialLanguage}`);
+    // Sync initial language to main process so the agent reflects the stored preference
+    if (typeof window !== 'undefined' && window.accomplish?.setLanguage) {
+      const storedPref = localStorage.getItem(LANGUAGE_STORAGE_KEY) ?? 'auto';
+      window.accomplish.setLanguage(storedPref).catch(() => {});
+    }
   })();
 
   return initializationPromise;
 }
 
 /**
- * Change language and persist to localStorage
+ * Change language and persist to localStorage and main-process DB (Electron only)
  */
 export async function changeLanguage(
   language: 'en' | 'zh-CN' | 'ru' | 'fr' | 'auto',
@@ -200,6 +205,10 @@ export async function changeLanguage(
   localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
   await i18n.changeLanguage(resolvedLanguage);
   updateDocumentDirection(resolvedLanguage);
+  // Persist to main process so the agent reads the correct language
+  if (typeof window !== 'undefined' && window.accomplish?.setLanguage) {
+    window.accomplish.setLanguage(language).catch(() => {});
+  }
 }
 
 /**
