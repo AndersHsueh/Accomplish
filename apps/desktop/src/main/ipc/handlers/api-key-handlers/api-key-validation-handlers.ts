@@ -110,7 +110,9 @@ export function registerApiKeyValidationHandlers(): void {
                 ? typeof options?.baseUrl === 'string'
                   ? options.baseUrl.trim() || undefined
                   : storage.getOpenAiBaseUrl().trim() || undefined
-                : undefined,
+                : typeof options?.baseUrl === 'string'
+                  ? options.baseUrl.trim() || undefined
+                  : undefined,
             zaiRegion: provider === 'zai' ? options?.zaiRegion || 'international' : undefined,
           },
         );

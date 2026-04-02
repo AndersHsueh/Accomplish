@@ -121,14 +121,17 @@ export async function fetchValidationResponse(
       );
     }
 
-    case 'minimax':
+    case 'minimax': {
+      const minimaxBase = options.baseUrl
+        ? options.baseUrl.replace(/\/+$/, '')
+        : 'https://api.minimax.io/anthropic';
       return fetchWithTimeout(
-        'https://api.minimax.io/anthropic/v1/messages',
+        `${minimaxBase}/v1/messages`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${apiKey}`,
+            'x-api-key': apiKey,
             'anthropic-version': '2023-06-01',
           },
           body: JSON.stringify({
@@ -139,6 +142,7 @@ export async function fetchValidationResponse(
         },
         timeout,
       );
+    }
 
     case 'ollama':
     case 'bedrock':

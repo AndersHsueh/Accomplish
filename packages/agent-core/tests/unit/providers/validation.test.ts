@@ -218,7 +218,7 @@ describe('API Key Validation', () => {
     });
 
     describe('MiniMax', () => {
-      it('should validate MiniMax key successfully', async () => {
+      it('should validate MiniMax key successfully with default base URL', async () => {
         vi.mocked(fetch).mockResolvedValueOnce({
           ok: true,
           json: async () => ({ id: 'msg-123' }),
@@ -232,7 +232,30 @@ describe('API Key Validation', () => {
           expect.objectContaining({
             method: 'POST',
             headers: expect.objectContaining({
-              Authorization: 'Bearer minimax-key',
+              'x-api-key': 'minimax-key',
+              'anthropic-version': '2023-06-01',
+            }),
+          }),
+        );
+      });
+
+      it('should validate MiniMax key using custom base URL', async () => {
+        vi.mocked(fetch).mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ id: 'msg-123' }),
+        } as Response);
+
+        const result = await validateApiKey('minimax', 'minimax-key', {
+          baseUrl: 'https://api.minimaxi.com/anthropic',
+        });
+
+        expect(result.valid).toBe(true);
+        expect(fetch).toHaveBeenCalledWith(
+          'https://api.minimaxi.com/anthropic/v1/messages',
+          expect.objectContaining({
+            method: 'POST',
+            headers: expect.objectContaining({
+              'x-api-key': 'minimax-key',
               'anthropic-version': '2023-06-01',
             }),
           }),
