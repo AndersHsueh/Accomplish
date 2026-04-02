@@ -71,6 +71,9 @@ const accomplishAPI = {
     ipcRenderer.invoke('settings:set-debug-mode', enabled),
   getTheme: (): Promise<string> => ipcRenderer.invoke('settings:theme'),
   setTheme: (theme: string): Promise<void> => ipcRenderer.invoke('settings:set-theme', theme),
+  getLanguage: (): Promise<string> => ipcRenderer.invoke('settings:language'),
+  setLanguage: (language: string): Promise<void> =>
+    ipcRenderer.invoke('settings:set-language', language),
   onThemeChange: (callback: (data: { theme: string; resolved: string }) => void) => {
     const listener = (_: unknown, data: { theme: string; resolved: string }) => callback(data);
     ipcRenderer.on('settings:theme-changed', listener);

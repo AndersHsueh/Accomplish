@@ -18,6 +18,7 @@ import {
  *
  * Placeholder tokens:
  * - `{{AGENT_ROLE}}` — replaced with the agent role (e.g., "task execution")
+ * - `{{LANGUAGE_INSTRUCTION}}` — language instruction (or empty when auto/English)
  * - `{{ENVIRONMENT_INSTRUCTIONS}}` — replaced by getPlatformEnvironmentInstructions()
  * - `{{BROWSER_CAPABILITY}}` — browser capability line (or empty)
  * - `{{BROWSER_BEHAVIOR}}` — browser behavior rules (or empty)
@@ -26,6 +27,7 @@ export const ACCOMPLISH_SYSTEM_PROMPT_TEMPLATE = `<identity>
 You are Accomplish, a {{AGENT_ROLE}} assistant.
 </identity>
 
+{{LANGUAGE_INSTRUCTION}}
 {{ENVIRONMENT_INSTRUCTIONS}}
 
 ${CONVERSATIONAL_BYPASS_BEHAVIOR}

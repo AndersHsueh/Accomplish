@@ -1,4 +1,4 @@
-import type { ThemePreference } from '../../types/storage.js';
+import type { ThemePreference, LanguagePreference } from '../../types/storage.js';
 import { getDatabase } from '../database.js';
 
 interface AppSettingsUiRow {
@@ -7,13 +7,14 @@ interface AppSettingsUiRow {
   theme: string;
   notifications_enabled: number;
   close_behavior: string;
+  language: string;
 }
 
 function getUiRow(): AppSettingsUiRow {
   const db = getDatabase();
   return db
     .prepare(
-      'SELECT debug_mode, onboarding_complete, theme, notifications_enabled, close_behavior FROM app_settings WHERE id = 1',
+      'SELECT debug_mode, onboarding_complete, theme, notifications_enabled, close_behavior, language FROM app_settings WHERE id = 1',
     )
     .get() as AppSettingsUiRow;
 }
@@ -80,4 +81,23 @@ export function setCloseBehavior(behavior: CloseBehavior): void {
   }
   const db = getDatabase();
   db.prepare('UPDATE app_settings SET close_behavior = ? WHERE id = 1').run(behavior);
+}
+
+export const VALID_LANGUAGES: LanguagePreference[] = ['auto', 'en', 'zh-CN', 'ru', 'fr'];
+
+export function getLanguage(): LanguagePreference {
+  const row = getUiRow();
+  const value = row.language as LanguagePreference;
+  if (VALID_LANGUAGES.includes(value)) {
+    return value;
+  }
+  return 'auto';
+}
+
+export function setLanguage(language: LanguagePreference): void {
+  if (!VALID_LANGUAGES.includes(language)) {
+    throw new Error(`Invalid language value: ${language}`);
+  }
+  const db = getDatabase();
+  db.prepare('UPDATE app_settings SET language = ? WHERE id = 1').run(language);
 }

@@ -124,6 +124,14 @@ export async function resolveTaskConfig(
     }
   }
 
+  // 6. Resolve UI language preference for agent communication
+  let language: string | undefined;
+  try {
+    language = storage.getLanguage();
+  } catch (_err) {
+    // Non-critical: language column may be absent in older DBs before migration
+  }
+
   return {
     configOptions: {
       platform,
@@ -142,6 +150,7 @@ export async function resolveTaskConfig(
       connectors: connectors.length > 0 ? connectors : undefined,
       browser,
       knowledgeNotes,
+      language,
     },
   };
 }
