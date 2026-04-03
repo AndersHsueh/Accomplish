@@ -13,7 +13,7 @@
   <a href="https://github.com/accomplish-ai/accomplish/commits"><img src="https://img.shields.io/github/last-commit/accomplish-ai/accomplish?style=flat-square&color=22c55e" alt="Last Commit" /></a>
   <a href="https://downloads.accomplish.ai/downloads/0.4.13/macos/Accomplish-0.4.13-mac-arm64.dmg"><img src="https://img.shields.io/badge/Download-macOS_(Apple_Silicon)-0ea5e9?style=flat-square" alt="Download for macOS (Apple Silicon)" /></a>
   <a href="https://downloads.accomplish.ai/downloads/0.4.13/macos/Accomplish-0.4.13-mac-x64.dmg"><img src="https://img.shields.io/badge/Download-macOS_(Intel)-0ea5e9?style=flat-square" alt="Download for macOS (Intel)" /></a>
-  <a href="https://downloads.accomplish.ai/downloads/0.4.13/windows/Accomplish-0.4.13-win-x64.exe"><img src="https://img.shields.io/badge/Download-Windows_11-0ea5e9?style=flat-square" alt="Download for Windows 11" /></a>
+  <a href="https://github.com/accomplish-ai/accomplish/releases/latest/download/Accomplish-latest-win-amd64.exe"><img src="https://img.shields.io/badge/Download-Windows_11-0ea5e9?style=flat-square" alt="Download for Windows 11" /></a>
   <a href="https://downloads.accomplish.ai/downloads/0.4.13/linux/Accomplish-0.4.13-linux-arm64.AppImage"><img src="https://img.shields.io/badge/Download-Linux_(ARM64)-0ea5e9?style=flat-square" alt="Download for Linux (ARM64)" /></a>
   <a href="https://downloads.accomplish.ai/downloads/0.4.13/linux/Accomplish-0.4.13-linux-x86_64.AppImage"><img src="https://img.shields.io/badge/Download-Linux_(x64)-0ea5e9?style=flat-square" alt="Download for Linux (x64)" /></a>
   <a href="https://downloads.accomplish.ai/downloads/0.4.13/linux/Accomplish-0.4.13-linux-amd64.deb"><img src="https://img.shields.io/badge/Download-Linux_(.deb_x64)-0ea5e9?style=flat-square" alt="Download for Linux (.deb x64)" /></a>
@@ -33,7 +33,7 @@ Accomplish is an open source AI desktop agent that automates file management, do
   ·
   <a href="https://downloads.accomplish.ai/downloads/0.4.13/macos/Accomplish-0.4.13-mac-x64.dmg"><strong>Download for Mac (Intel)</strong></a>
   ·
-  <a href="https://downloads.accomplish.ai/downloads/0.4.13/windows/Accomplish-0.4.13-win-x64.exe"><strong>Download for Windows 11</strong></a>
+  <a href="https://github.com/accomplish-ai/accomplish/releases/latest/download/Accomplish-latest-win-amd64.exe"><strong>Download for Windows 11</strong></a>
   ·
   <a href="https://downloads.accomplish.ai/downloads/0.4.13/linux/Accomplish-0.4.13-linux-arm64.AppImage"><strong>Download for Linux (ARM64)</strong></a>
   ·
@@ -202,7 +202,7 @@ Accomplish runs locally on your machine. Your files stay on your device, and you
 
 <div align="center">
 
-[**Download for Mac (Apple Silicon)**](https://downloads.accomplish.ai/downloads/0.4.13/macos/Accomplish-0.4.13-mac-arm64.dmg) · [**Download for Mac (Intel)**](https://downloads.accomplish.ai/downloads/0.4.13/macos/Accomplish-0.4.13-mac-x64.dmg) · [**Download for Windows 11**](https://downloads.accomplish.ai/downloads/0.4.13/windows/Accomplish-0.4.13-win-x64.exe) · [**Download for Linux (ARM64)**](https://downloads.accomplish.ai/downloads/0.4.13/linux/Accomplish-0.4.13-linux-arm64.AppImage) · [**Download for Linux (x64)**](https://downloads.accomplish.ai/downloads/0.4.13/linux/Accomplish-0.4.13-linux-x86_64.AppImage) · [**Download for Linux (.deb x64)**](https://downloads.accomplish.ai/downloads/0.4.13/linux/Accomplish-0.4.13-linux-amd64.deb)
+[**Download for Mac (Apple Silicon)**](https://downloads.accomplish.ai/downloads/0.4.13/macos/Accomplish-0.4.13-mac-arm64.dmg) · [**Download for Mac (Intel)**](https://downloads.accomplish.ai/downloads/0.4.13/macos/Accomplish-0.4.13-mac-x64.dmg) · [**Download for Windows 11**](https://github.com/accomplish-ai/accomplish/releases/latest/download/Accomplish-latest-win-amd64.exe) · [**Download for Linux (ARM64)**](https://downloads.accomplish.ai/downloads/0.4.13/linux/Accomplish-0.4.13-linux-arm64.AppImage) · [**Download for Linux (x64)**](https://downloads.accomplish.ai/downloads/0.4.13/linux/Accomplish-0.4.13-linux-x86_64.AppImage) · [**Download for Linux (.deb x64)**](https://downloads.accomplish.ai/downloads/0.4.13/linux/Accomplish-0.4.13-linux-amd64.deb)
 
 </div>
 
@@ -279,6 +279,24 @@ That's it.
 | `pnpm lint`                                 | TypeScript checks                      |
 | `pnpm typecheck`                            | Type validation                        |
 | `pnpm -F @accomplish/desktop test:e2e`      | Playwright E2E tests                   |
+
+</details>
+
+<details>
+<summary><strong>Windows tag build (GitHub Actions)</strong></summary>
+
+- Trigger (only effective on `own-main` HEAD): `vX.Y.Z-win` (for example: `v1.2.3-win`)
+- Example:
+
+```bash
+git checkout own-main
+git pull origin own-main
+git tag v1.2.3-win
+git push origin v1.2.3-win
+```
+
+- README Windows download link points to:
+  `https://github.com/accomplish-ai/accomplish/releases/latest/download/Accomplish-latest-win-amd64.exe`
 
 </details>
 

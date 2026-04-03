@@ -1,0 +1,95 @@
+name: Build Windows on Win Tag
+
+on:
+  push:
+    tags:
+      - 'v*.*.*-win'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-win-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  guard-own-main:
+    name: Guard own-main tag
+    runs-on: ubuntu-latest
+    outputs:
+      should_build: ${{ steps.guard.outputs.should_build }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate tag commit is own-main HEAD
+        id: guard
+        run: |
+          git fetch origin own-main --depth=1
+
+          TAG_SHA="${GITHUB_SHA}"
+          OWN_MAIN_SHA="$(git rev-parse origin/own-main)"
+
+          echo "Tag: ${GITHUB_REF_NAME}"
+          echo "Tag SHA: ${TAG_SHA}"
+          echo "origin/own-main SHA: ${OWN_MAIN_SHA}"
+
+          if [ "${TAG_SHA}" = "${OWN_MAIN_SHA}" ]; then
+            echo "Tag commit matches origin/own-main HEAD. Continue."
+            echo "should_build=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Tag commit does not match origin/own-main HEAD. Skip build and release."
+            echo "should_build=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build-win-amd64:
+    name: Build Windows amd64
+    needs: guard-own-main
+    if: needs.guard-own-main.outputs.should_build == 'true'
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Windows package
+        run: pnpm -F @accomplish/desktop package:win
+
+      - name: Prepare stable Windows asset name
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem "apps/desktop/release/Accomplish-*-win-x64.exe" | Select-Object -First 1
+          if (-not $exe) {
+            throw "Windows installer not found in apps/desktop/release"
+          }
+
+          Copy-Item $exe.FullName "apps/desktop/release/Accomplish-latest-win-amd64.exe" -Force
+
+      - name: Upload GitHub release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          overwrite_files: true
+          files: |
+            apps/desktop/release/Accomplish-*-win-x64.exe
+            apps/desktop/release/Accomplish-latest-win-amd64.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
