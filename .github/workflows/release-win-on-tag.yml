@@ -49,7 +49,7 @@ jobs:
     needs: guard-own-main
     if: needs.guard-own-main.outputs.should_build == 'true'
     runs-on: windows-latest
-    timeout-minutes: 40
+    timeout-minutes: 120
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
