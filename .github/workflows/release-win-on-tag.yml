@@ -81,7 +81,7 @@ jobs:
         run: pnpm -F @accomplish/desktop build:mcp-tools:package
 
       - name: Package Windows installer
-        run: pnpm exec electron-builder --win --x64 --publish never --config.npmRebuild=false
+        run: node scripts/package.cjs --win --x64 --publish never
         working-directory: apps/desktop
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
