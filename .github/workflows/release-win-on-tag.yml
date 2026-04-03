@@ -10,7 +10,7 @@ permissions:
 
 concurrency:
   group: release-win-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   guard-own-main:
@@ -49,6 +49,7 @@ jobs:
     needs: guard-own-main
     if: needs.guard-own-main.outputs.should_build == 'true'
     runs-on: windows-latest
+    timeout-minutes: 40
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -67,8 +68,24 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build Windows package
-        run: pnpm -F @accomplish/desktop package:win
+      - name: Download Node.js binaries
+        run: pnpm -F @accomplish/desktop download:nodejs
+
+      - name: Build desktop base
+        run: pnpm -F @accomplish/desktop build:base
+
+      - name: Build daemon
+        run: pnpm -F @accomplish/daemon build
+
+      - name: Bundle MCP tools
+        run: pnpm -F @accomplish/desktop build:mcp-tools:package
+
+      - name: Package Windows installer
+        run: node scripts/package.cjs --win --x64 --publish never
+        working-directory: apps/desktop
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
 
       - name: Prepare stable Windows asset name
         shell: pwsh
