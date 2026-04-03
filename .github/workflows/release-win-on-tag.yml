@@ -81,68 +81,11 @@ jobs:
         run: pnpm -F @accomplish/desktop build:mcp-tools:package
 
       - name: Package Windows installer
-        shell: pwsh
+        run: node scripts/package.cjs --win --x64 --publish never
         working-directory: apps/desktop
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
-        run: |
-          $stdoutLog = Join-Path $env:RUNNER_TEMP "package-win.stdout.log"
-          $stderrLog = Join-Path $env:RUNNER_TEMP "package-win.stderr.log"
-          $args = @(
-            "exec",
-            "node",
-            "scripts/package.cjs",
-            "--win",
-            "--x64",
-            "--publish",
-            "never"
-          )
-
-          $proc = Start-Process -FilePath "pnpm.cmd" `
-            -ArgumentList $args `
-            -NoNewWindow `
-            -PassThru `
-            -RedirectStandardOutput $stdoutLog `
-            -RedirectStandardError $stderrLog
-
-          if (-not $proc.WaitForExit(1500 * 1000)) {
-            Write-Host "::error::Windows packaging timed out after 25 minutes."
-            Get-Process | Sort-Object CPU -Descending | Select-Object -First 20 Name, Id, CPU, WS | Format-Table -AutoSize
-            if (Test-Path $stdoutLog) {
-              Write-Host "----- package-win.stdout.log (tail) -----"
-              Get-Content $stdoutLog -Tail 200
-            }
-            if (Test-Path $stderrLog) {
-              Write-Host "----- package-win.stderr.log (tail) -----"
-              Get-Content $stderrLog -Tail 200
-            }
-            Stop-Process -Id $proc.Id -Force
-            exit 1
-          }
-
-          if (Test-Path $stdoutLog) {
-            Write-Host "----- package-win.stdout.log (tail) -----"
-            Get-Content $stdoutLog -Tail 200
-          }
-          if (Test-Path $stderrLog) {
-            Write-Host "----- package-win.stderr.log (tail) -----"
-            Get-Content $stderrLog -Tail 200
-          }
-
-          if ($proc.ExitCode -ne 0) {
-            exit $proc.ExitCode
-          }
-
-      - name: Upload packaging debug log
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: package-win-log
-          path: |
-            ${{ runner.temp }}/package-win.stdout.log
-            ${{ runner.temp }}/package-win.stderr.log
-          if-no-files-found: ignore
 
       - name: Prepare stable Windows asset name
         shell: pwsh

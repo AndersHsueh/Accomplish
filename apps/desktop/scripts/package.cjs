@@ -83,8 +83,8 @@ try {
   // This avoids issues with node-pty's winpty.gyp batch file handling
   const npmRebuildFlag = isWindows ? ' --config.npmRebuild=false' : '';
 
-  // Use npx to run electron-builder to ensure it's found in node_modules
-  const command = `npx electron-builder ${args}${npmRebuildFlag}`;
+  // Use pnpm exec to avoid npx resolution/network checks that can hang on CI Windows runners.
+  const command = `pnpm exec electron-builder ${args}${npmRebuildFlag}`;
 
   console.log('Running:', command);
   if (isWindows) {
