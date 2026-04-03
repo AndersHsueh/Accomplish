@@ -13,6 +13,16 @@ const path = require('path');
 const isWindows = process.platform === 'win32';
 const nodeModulesPath = path.join(__dirname, '..', 'node_modules');
 const accomplishPath = path.join(nodeModulesPath, '@accomplish_ai');
+const localMcpToolsPath = path.join(__dirname, '..', 'mcp-tools');
+const workspaceMcpToolsPath = path.join(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'packages',
+  'agent-core',
+  'mcp-tools',
+);
 
 // Save symlink targets for restoration
 const workspacePackages = ['agent-core'];
@@ -37,7 +47,20 @@ const pnpmSymlinksToResolve = [
 ];
 const resolvedSymlinks = {};
 
+function syncLocalMcpTools() {
+  if (!fs.existsSync(workspaceMcpToolsPath)) {
+    throw new Error(`Workspace MCP tools not found: ${workspaceMcpToolsPath}`);
+  }
+  if (fs.existsSync(localMcpToolsPath)) {
+    fs.rmSync(localMcpToolsPath, { recursive: true, force: true });
+  }
+  console.log('Syncing local mcp-tools for packaging:', localMcpToolsPath);
+  fs.cpSync(workspaceMcpToolsPath, localMcpToolsPath, { recursive: true });
+}
+
 try {
+  syncLocalMcpTools();
+
   // Check and remove workspace symlinks
   for (const pkg of workspacePackages) {
     const pkgPath = path.join(accomplishPath, pkg);
@@ -92,6 +115,10 @@ try {
   }
   execSync(command, { stdio: 'inherit', cwd: path.join(__dirname, '..') });
 } finally {
+  if (fs.existsSync(localMcpToolsPath)) {
+    fs.rmSync(localMcpToolsPath, { recursive: true, force: true });
+  }
+
   // Restore pnpm store symlinks
   for (const [pkg, { linkTarget, pkgPath }] of Object.entries(resolvedSymlinks)) {
     console.log('Restoring pnpm symlink:', pkgPath);

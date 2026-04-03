@@ -130,7 +130,7 @@
         "to": "icon.png"
       },
       {
-        "from": "../../packages/agent-core/mcp-tools",
+        "from": "mcp-tools",
         "to": "mcp-tools",
         "filter": [
           "**/*",
