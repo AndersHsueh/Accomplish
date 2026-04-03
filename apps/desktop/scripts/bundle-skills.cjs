@@ -198,13 +198,15 @@ function reinstallProductionDepsForBundledBuild() {
       console.log(`[bundle-skills] Removed ${nodeModulesPath}`);
     }
 
-    // Note: We don't use --ignore-scripts because playwright needs its postinstall
-    // script to download browser binaries
+    // PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 prevents playwright from downloading browser
+    // binaries during npm install. Browsers are downloaded at runtime on first use.
+    // Without this, CI Windows runners hang for hours downloading Chromium/Firefox/WebKit.
     console.log(`[bundle-skills] Installing production deps for ${skillName}...`);
     try {
       execSync('npm install --omit=dev', {
         cwd: skillPath,
         stdio: 'inherit',
+        env: { ...process.env, PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1' },
       });
       console.log(`[bundle-skills] Installed production deps for ${skillName}`);
     } catch (error) {
