@@ -187,8 +187,10 @@ export async function initI18n(): Promise<void> {
     logger.info(`Initialized with language: ${initialLanguage}`);
     // Sync initial language to main process so the agent reflects the stored preference
     if (typeof window !== 'undefined' && window.accomplish?.setLanguage) {
-      const storedPref = localStorage.getItem(LANGUAGE_STORAGE_KEY) ?? 'auto';
-      window.accomplish.setLanguage(storedPref).catch(() => {});
+      const storedPref = getLanguagePreference();
+      window.accomplish.setLanguage(storedPref).catch((error) => {
+        logger.warn('Failed to sync initial language preference to main process', { error });
+      });
     }
   })();
 
@@ -207,7 +209,9 @@ export async function changeLanguage(
   updateDocumentDirection(resolvedLanguage);
   // Persist to main process so the agent reads the correct language
   if (typeof window !== 'undefined' && window.accomplish?.setLanguage) {
-    window.accomplish.setLanguage(language).catch(() => {});
+    window.accomplish.setLanguage(language).catch((error) => {
+      logger.warn('Failed to sync language preference to main process', { error });
+    });
   }
 }
 

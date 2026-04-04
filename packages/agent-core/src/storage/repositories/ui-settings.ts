@@ -85,6 +85,12 @@ export function setCloseBehavior(behavior: CloseBehavior): void {
 
 export const VALID_LANGUAGES: LanguagePreference[] = ['auto', 'en', 'zh-CN', 'ru', 'fr'];
 
+/**
+ * Returns the user's persisted UI language preference.
+ *
+ * Validates the stored value against `VALID_LANGUAGES`; returns `'auto'`
+ * as a safe default if the stored value is unrecognized or missing.
+ */
 export function getLanguage(): LanguagePreference {
   const row = getUiRow();
   const value = row.language as LanguagePreference;
@@ -94,6 +100,12 @@ export function getLanguage(): LanguagePreference {
   return 'auto';
 }
 
+/**
+ * Persists the user's UI language preference to the database.
+ *
+ * Validates `language` against `VALID_LANGUAGES` and throws if the value
+ * is invalid. The value is written directly to the `app_settings` row.
+ */
 export function setLanguage(language: LanguagePreference): void {
   if (!VALID_LANGUAGES.includes(language)) {
     throw new Error(`Invalid language value: ${language}`);
