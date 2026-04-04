@@ -18,6 +18,15 @@ const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
   fr: 'French',
 };
 
+/**
+ * Generates a language instruction directive for the system prompt.
+ *
+ * Returns an empty string for `'auto'`, `'en'`, or unknown languages
+ * (English is the model default, so no directive is needed).
+ * For non-English languages, returns a pound-delimited directive in Chinese
+ * characters that instructs the model to communicate in that language,
+ * e.g. `#始终用中文交流#` for `zh-CN`.
+ */
 function getLanguageInstruction(language: string | undefined): string {
   if (!language || language === 'auto' || language === 'en') {
     return '';
