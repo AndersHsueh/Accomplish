@@ -66,9 +66,17 @@ export function getBundledNodeBinPath(opts: TaskConfigBuilderOptions): string | 
 export async function buildEnvironment(
   taskId: string,
   storage: StorageAPI,
-  _opts: TaskConfigBuilderOptions,
+  opts: TaskConfigBuilderOptions,
 ): Promise<NodeJS.ProcessEnv> {
   const env: NodeJS.ProcessEnv = { ...process.env };
+
+  // Prepend the bundled Node.js bin dir to PATH so the opencode wrapper script
+  // can find `node` even when the daemon runs as a login item with minimal PATH
+  // (e.g. /usr/bin:/bin:/usr/sbin:/sbin with no user-installed Node.js).
+  const bundledNodeBin = getBundledNodeBinPath(opts);
+  if (bundledNodeBin) {
+    env.PATH = `${bundledNodeBin}${path.delimiter}${env.PATH || ''}`;
+  }
   const apiKeys = await storage.getAllApiKeys();
   const bedrockCredentials = storage.getBedrockCredentials() as BedrockCredentials | null;
   const activeModel = storage.getActiveProviderModel();
@@ -152,6 +160,7 @@ export async function onBeforeStart(
 
   const permissionApiPort = getPort('ACCOMPLISH_PERMISSION_API_PORT');
   const questionApiPort = getPort('ACCOMPLISH_QUESTION_API_PORT');
+  const whatsappApiPort = getPort('ACCOMPLISH_WHATSAPP_API_PORT');
 
   const result = generateConfig({
     platform: process.platform,
@@ -163,6 +172,7 @@ export async function onBeforeStart(
     enabledProviders,
     permissionApiPort,
     questionApiPort,
+    whatsappApiPort,
     authToken: process.env.ACCOMPLISH_DAEMON_AUTH_TOKEN,
     model: modelOverride?.model,
     smallModel: modelOverride?.smallModel,
